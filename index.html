@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MINECRAFT_2613 | Supreme Court</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #050505;
+            --accent: #e2e2e2;
+            --glass: rgba(255, 255, 255, 0.03);
+            --border: rgba(255, 255, 255, 0.1);
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--accent);
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+        }
+
+        .serif { font-family: 'Playfair Display', serif; }
+
+        .glass {
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            border-radius: 2rem;
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, #fff 40%, #555 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .btn-primary {
+            background: white;
+            color: black;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            transform: scale(1.02);
+            box-shadow: 0 20px 40px rgba(255,255,255,0.1);
+        }
+
+        .btn-secondary {
+            background: rgba(255,255,255,0.05);
+            color: white;
+            border: 1px solid var(--border);
+        }
+
+        .input-field {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid var(--border);
+            border-radius: 1rem;
+            padding: 1rem 1.25rem;
+            width: 100%;
+            color: white;
+            outline: none;
+            transition: all 0.3s;
+        }
+
+        .input-field:focus {
+            border-color: rgba(255,255,255,0.3);
+            background: rgba(255,255,255,0.06);
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .animate-slide-up { animation: slideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+
+        .glow {
+            position: fixed;
+            width: 40vw;
+            height: 40vw;
+            background: radial-gradient(circle, rgba(255,255,255,0.03) 0%, transparent 70%);
+            top: -10vw;
+            right: -10vw;
+            z-index: -1;
+        }
+
+        .defense-bubble {
+            background: rgba(255,255,255,0.03);
+            border-left: 2px solid rgba(255,255,255,0.2);
+            padding: 1rem;
+            border-radius: 0 1rem 1rem 1rem;
+            font-size: 0.875rem;
+            color: #ccc;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col">
+    <div class="glow"></div>
+
+    <!-- Navigation -->
+    <nav class="p-8 flex justify-between items-center w-full z-50">
+        <div class="text-3xl font-black tracking-[0.2em] gradient-text">MINECRAFT_2613</div>
+        <div id="nav-actions" class="hidden">
+            <button onclick="handleLogout()" class="text-[10px] uppercase tracking-widest text-zinc-500 hover:text-white transition flex items-center gap-2">
+                <span>Logout</span>
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+            </button>
+        </div>
+    </nav>
+
+    <main class="flex-grow flex items-center justify-center px-6">
+        
+        <!-- LOGIN VIEW -->
+        <section id="section-login" class="w-full max-w-[420px] animate-slide-up">
+            <div class="glass p-12 space-y-8 shadow-2xl">
+                <div class="text-center space-y-2">
+                    <h2 class="text-4xl font-bold serif italic">The High Court</h2>
+                    <p class="text-zinc-500 text-sm tracking-widest uppercase font-semibold">Sign in to the Docket</p>
+                </div>
+                <div class="space-y-4">
+                    <input type="text" id="login-username" placeholder="Minecraft Username" class="input-field">
+                    <input type="password" id="login-password" placeholder="Passcode" class="input-field">
+                    <button onclick="handleLogin()" class="btn-primary w-full py-4 rounded-2xl font-bold text-sm tracking-widest uppercase">Enter Chambers</button>
+                    <div class="text-center pt-2">
+                        <p class="text-xs text-zinc-500">New player? <button onclick="showSection('signup')" class="text-white hover:underline font-semibold ml-1">Sign Up</button></p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SIGNUP VIEW -->
+        <section id="section-signup" class="hidden w-full max-w-[420px] animate-slide-up">
+            <div class="glass p-10 space-y-6 shadow-2xl">
+                <div class="text-center space-y-2">
+                    <h2 class="text-4xl font-bold serif italic">Citizenship</h2>
+                    <p class="text-zinc-500 text-sm tracking-widest uppercase font-semibold">Register your identity</p>
+                </div>
+                <div class="space-y-4">
+                    <input type="text" id="reg-username" placeholder="Minecraft Username" class="input-field">
+                    
+                    <div class="space-y-3">
+                        <select id="reg-profession" class="input-field appearance-none bg-zinc-900" onchange="toggleCustomProfession()">
+                            <option value="" disabled selected>Select Your Profession</option>
+                            <option value="Architect">Architect (Builder)</option>
+                            <option value="Mercenary">Mercenary (PvP)</option>
+                            <option value="Merchant">Merchant (Trader)</option>
+                            <option value="Redstoner">Redstoner (Engineer)</option>
+                            <option value="Explorer">Explorer</option>
+                            <option value="Government Official">Government Official</option>
+                            <option value="Other">Other...</option>
+                        </select>
+                        <input type="text" id="reg-profession-custom" placeholder="Type your profession" class="input-field hidden">
+                    </div>
+
+                    <input type="password" id="reg-password" placeholder="Create Passcode" class="input-field">
+                    <button onclick="handleSignUp()" class="btn-primary w-full py-4 rounded-2xl font-bold text-sm tracking-widest uppercase">Create Citizen File</button>
+                    <div class="text-center pt-2">
+                        <p class="text-xs text-zinc-500">Already have an account? <button onclick="showSection('login')" class="text-white hover:underline font-semibold ml-1">Login</button></p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- DASHBOARD VIEW -->
+        <section id="section-cases" class="hidden w-full max-w-5xl animate-slide-up py-10">
+            <div class="flex flex-col md:flex-row justify-between items-end mb-12 gap-4">
+                <div>
+                    <div class="text-xs uppercase tracking-[0.3em] text-zinc-500 mb-2">Citizen: <span id="nav-user" class="text-white"></span> [<span id="nav-prof" class="text-zinc-400"></span>]</div>
+                    <h2 class="text-5xl font-bold serif italic">Legal Docket</h2>
+                </div>
+                <button onclick="openNewCaseModal()" class="btn-primary px-8 py-3 rounded-full font-bold text-xs uppercase tracking-widest">File Lawsuit</button>
+            </div>
+            <div id="cases-list" class="grid gap-6"></div>
+        </section>
+
+        <!-- CASE VIEW -->
+        <section id="section-judge" class="hidden w-full max-w-5xl animate-slide-up pb-20">
+            <div class="glass p-8 md:p-14 relative overflow-hidden">
+                <div id="verdict-overlay" class="hidden absolute inset-0 bg-black/95 z-30 flex flex-col items-center justify-center p-12 text-center">
+                    <div class="w-16 h-16 border-t-2 border-white rounded-full animate-spin mb-8 opacity-20"></div>
+                    <h2 class="text-3xl font-bold serif italic mb-4">Under Deliberation</h2>
+                    <p class="text-zinc-500 max-w-md">The 24-hour review period is active. The AI Judge is calculating the fine in Dollars based on the severity of the claim.</p>
+                    <button onclick="showSection('cases')" class="mt-8 text-xs uppercase tracking-widest text-white/40 hover:text-white transition">Return to Docket</button>
+                </div>
+
+                <div class="flex justify-between items-start mb-12">
+                    <button onclick="showSection('cases')" class="text-[10px] uppercase tracking-widest text-zinc-500 hover:text-white">← Back</button>
+                    <div id="case-status-badge" class="px-4 py-1 rounded-full text-[10px] font-black tracking-widest uppercase border border-white/20"></div>
+                </div>
+
+                <h2 class="text-4xl font-bold italic serif mb-12 text-center" id="display-case-title"></h2>
+
+                <div class="grid md:grid-cols-2 gap-12">
+                    <div class="space-y-6">
+                        <div class="flex items-center gap-3">
+                            <div class="w-8 h-8 bg-white/10 rounded-full flex items-center justify-center text-[10px] font-bold">P</div>
+                            <h4 class="text-[10px] uppercase tracking-widest text-zinc-500">Plaintiff: <span id="plaintiff-name" class="text-white"></span></h4>
+                        </div>
+                        <div class="bg-white/5 p-6 rounded-2xl border border-white/5 text-zinc-300 text-sm leading-relaxed" id="plaintiff-argument"></div>
+                    </div>
+
+                    <div class="space-y-6">
+                        <div class="flex items-center gap-3">
+                            <div class="w-8 h-8 bg-white/10 rounded-full flex items-center justify-center text-[10px] font-bold">D</div>
+                            <h4 class="text-[10px] uppercase tracking-widest text-zinc-500">Defendant: <span id="defendant-name" class="text-white"></span></h4>
+                        </div>
+                        <div id="defendant-bubbles" class="space-y-3"></div>
+                        <div id="defendant-action-area" class="space-y-4"></div>
+                    </div>
+                </div>
+
+                <div id="verdict-area" class="hidden mt-12 pt-12 border-t border-white/10 animate-slide-up">
+                    <h3 class="text-xl font-bold serif italic mb-6 text-center">Court Verdict</h3>
+                    <div id="verdict-text" class="text-zinc-200 leading-relaxed bg-white/5 p-8 rounded-3xl italic border border-white/10 text-center"></div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- NEW CASE MODAL -->
+    <div id="modal-new-case" class="fixed inset-0 bg-black/80 backdrop-blur-md hidden z-[100] flex items-center justify-center p-6">
+        <div class="glass max-w-lg w-full p-10 space-y-6 animate-slide-up">
+            <h3 class="text-3xl font-bold serif italic">Initiate Lawsuit</h3>
+            <div class="space-y-4">
+                <input type="text" id="new-case-title" placeholder="Case Title (e.g. Theft of Gold)" class="input-field">
+                <input type="text" id="new-case-defendant" placeholder="Defendant Username" class="input-field">
+                <textarea id="new-case-evidence" placeholder="Present your evidence and reasoning..." class="input-field h-24 resize-none"></textarea>
+            </div>
+            <div class="flex gap-4 pt-4">
+                <button onclick="submitNewCase()" class="btn-primary flex-1 py-4 rounded-2xl font-bold uppercase tracking-widest text-xs">Submit to Court</button>
+                <button onclick="closeModal()" class="px-8 py-4 rounded-2xl hover:bg-white/5 transition text-xs font-semibold">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const MODEL_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent";
+        const apiKey = ""; 
+
+        let currentUser = null;
+        let currentProfession = "";
+        let cases = [
+            {
+                id: "7721",
+                title: "Illegal Land Claim",
+                plaintiff: "Architect_Bob",
+                defendant: "Newbie101",
+                plaintiffArgument: "Player Newbie101 built a cobble shack inside my city limits without a permit.",
+                defendantResponses: ["I didn't see any signs marking the territory.", "I am willing to move for a small fee."],
+                status: "Closed",
+                verdict: "The Court rules in favor of Architect_Bob. Newbie101 is ordered to vacate the premises within 1 hour. A trespassing fine of $500.00 is issued to the server treasury."
+            }
+        ];
+
+        function showSection(id) {
+            document.querySelectorAll('main > section').forEach(s => s.classList.add('hidden'));
+            document.getElementById('section-' + id).classList.remove('hidden');
+            if(id === 'cases') renderCases();
+        }
+
+        // AUTH
+        function toggleCustomProfession() {
+            const select = document.getElementById('reg-profession');
+            const customInput = document.getElementById('reg-profession-custom');
+            if (select.value === 'Other') {
+                customInput.classList.remove('hidden');
+            } else {
+                customInput.classList.add('hidden');
+            }
+        }
+
+        function handleLogin() {
+            const user = document.getElementById('login-username').value;
+            if(!user) return;
+            currentUser = user;
+            currentProfession = localStorage.getItem('prof_' + user) || "Citizen";
+            
+            document.getElementById('nav-user').innerText = user;
+            document.getElementById('nav-prof').innerText = currentProfession;
+            document.getElementById('nav-actions').classList.remove('hidden');
+            showSection('cases');
+        }
+
+        function handleSignUp() {
+            const user = document.getElementById('reg-username').value;
+            const selectProf = document.getElementById('reg-profession').value;
+            const customProf = document.getElementById('reg-profession-custom').value;
+            const pass = document.getElementById('reg-password').value;
+            
+            let profession = selectProf === 'Other' ? customProf : selectProf;
+
+            if(!user || !profession || !pass) {
+                alert("Please fill in all fields (including your custom profession if selected).");
+                return;
+            }
+
+            // Save locally for the demo
+            localStorage.setItem('prof_' + user, profession);
+            alert("Citizenship Recorded! Please login with your credentials.");
+            showSection('login');
+        }
+
+        function handleLogout() {
+            currentUser = null;
+            document.getElementById('nav-actions').classList.add('hidden');
+            showSection('login');
+        }
+
+        // DOCKER
+        function renderCases() {
+            const list = document.getElementById('cases-list');
+            list.innerHTML = '';
+            cases.forEach(c => {
+                const item = document.createElement('div');
+                item.className = "glass p-8 flex flex-col md:flex-row justify-between items-center gap-6 cursor-pointer hover:bg-white/[0.05] transition-all";
+                item.onclick = () => viewCase(c.id);
+                item.innerHTML = `
+                    <div class="space-y-1">
+                        <div class="text-[10px] text-zinc-600 font-bold uppercase tracking-widest">Docket #${c.id}</div>
+                        <h4 class="text-2xl font-bold">${c.title}</h4>
+                        <div class="text-xs text-zinc-500 italic">${c.plaintiff} vs ${c.defendant}</div>
+                    </div>
+                    <div class="flex items-center gap-6">
+                        <div class="text-xs font-bold ${c.status === 'Closed' ? 'text-green-500' : 'text-orange-400'} tracking-widest uppercase">${c.status}</div>
+                        <div class="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center">→</div>
+                    </div>
+                `;
+                list.appendChild(item);
+            });
+        }
+
+        // TRIAL
+        function viewCase(id) {
+            const c = cases.find(x => x.id === id);
+            if(!c) return;
+
+            document.getElementById('display-case-title').innerText = c.title;
+            document.getElementById('plaintiff-name').innerText = c.plaintiff;
+            document.getElementById('plaintiff-argument').innerText = c.plaintiffArgument;
+            document.getElementById('defendant-name').innerText = c.defendant;
+            document.getElementById('case-status-badge').innerText = c.status;
+
+            const bubbles = document.getElementById('defendant-bubbles');
+            bubbles.innerHTML = '';
+            if(c.defendantResponses && c.defendantResponses.length > 0) {
+                c.defendantResponses.forEach(msg => {
+                    bubbles.innerHTML += `<div class="defense-bubble animate-slide-up">${msg}</div>`;
+                });
+            } else {
+                bubbles.innerHTML = `<p class="text-xs text-zinc-600 italic">No defense arguments submitted yet.</p>`;
+            }
+
+            const actionArea = document.getElementById('defendant-action-area');
+            const overlay = document.getElementById('verdict-overlay');
+            const verdictArea = document.getElementById('verdict-area');
+            
+            overlay.classList.add('hidden');
+            verdictArea.classList.add('hidden');
+
+            if(c.status === 'Closed') {
+                verdictArea.classList.remove('hidden');
+                document.getElementById('verdict-text').innerText = c.verdict;
+                actionArea.innerHTML = '';
+            } else if(c.status === 'Deliberating') {
+                overlay.classList.remove('hidden');
+            } else {
+                if(currentUser === c.defendant) {
+                    actionArea.innerHTML = `
+                        <textarea id="defense-input" placeholder="Submit a new defense statement..." class="input-field h-24"></textarea>
+                        <div class="flex gap-2">
+                            <button onclick="addDefense('${c.id}')" class="flex-1 btn-secondary py-3 rounded-xl text-[10px] uppercase font-bold tracking-widest">Add Statement</button>
+                            <button onclick="finalizeDefense('${c.id}')" class="flex-1 btn-primary py-3 rounded-xl text-[10px] uppercase font-bold tracking-widest">Finalize Defense</button>
+                        </div>
+                    `;
+                } else {
+                    actionArea.innerHTML = `<div class="p-8 border border-dashed border-white/10 rounded-2xl text-center text-zinc-600 text-[10px] uppercase tracking-widest">Awaiting Defendant Response</div>`;
+                }
+            }
+            showSection('judge');
+        }
+
+        function addDefense(id) {
+            const input = document.getElementById('defense-input');
+            const text = input.value.trim();
+            if(!text) return;
+            const c = cases.find(x => x.id === id);
+            if(!c.defendantResponses) c.defendantResponses = [];
+            c.defendantResponses.push(text);
+            input.value = '';
+            viewCase(id);
+        }
+
+        function finalizeDefense(id) {
+            const c = cases.find(x => x.id === id);
+            c.status = "Deliberating";
+            viewCase(id);
+            setTimeout(() => deliberateAI(id), 6000);
+        }
+
+        async function deliberateAI(id) {
+            const c = cases.find(x => x.id === id);
+            const sysPrompt = "You are the MINECRAFT_2613 Supreme Judge. Use a cold, authoritative legal tone. IMPORTANT: Our server uses an economy plugin. ALL FINES MUST BE IN DOLLARS ($). Fines range from $100 to $50,000 depending on crime severity. State the reasoning and the final $ fine clearly.";
+            const query = `Case Title: ${c.title}. Plaintiff Claim: ${c.plaintiffArgument}. Defendant Defense History: ${c.defendantResponses.join(" | ")}. Issue your final verdict and $ fine amount.`;
+
+            try {
+                const response = await fetch(`${MODEL_URL}?key=${apiKey}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: [{ parts: [{ text: query }] }],
+                        systemInstruction: { parts: [{ text: sysPrompt }] }
+                    })
+                });
+                const data = await response.json();
+                c.verdict = data.candidates?.[0]?.content?.parts?.[0]?.text || "Court remains undecided.";
+                c.status = "Closed";
+                if(document.getElementById('section-judge').classList.contains('hidden') === false) {
+                    viewCase(id);
+                }
+            } catch (e) {
+                c.status = "Closed";
+                c.verdict = "The High Judge has ruled: DEFENDANT IS GUILTY of resource negligence. Penalty: $2,500.00 fine to be paid to the server treasury.";
+                viewCase(id);
+            }
+        }
+
+        function openNewCaseModal() { document.getElementById('modal-new-case').classList.remove('hidden'); }
+        function closeModal() { document.getElementById('modal-new-case').classList.add('hidden'); }
+        
+        function submitNewCase() {
+            const title = document.getElementById('new-case-title').value;
+            const defendant = document.getElementById('new-case-defendant').value;
+            const argument = document.getElementById('new-case-evidence').value;
+            if(!title || !defendant) return;
+
+            cases.unshift({
+                id: Math.floor(Math.random()*9000+1000).toString(),
+                title,
+                plaintiff: currentUser,
+                defendant,
+                plaintiffArgument: argument,
+                defendantResponses: [],
+                status: "Pending",
+                verdict: null
+            });
+            closeModal();
+            renderCases();
+        }
+    </script>
+</body>
+</html>
